@@ -11,7 +11,6 @@ import {
   openSectionModal,
   openChapterModal,
 } from "@/state";
-import { Ref, JSX, ClassAttributes, HTMLAttributes, ReactElement, JSXElementConstructor, ReactNode, ReactPortal } from "react";
 
 export default function DroppableComponent() {
   const dispatch = useAppDispatch();
@@ -46,7 +45,7 @@ export default function DroppableComponent() {
   return (
     <DragDropContext onDragEnd={handleSectionDragEnd}>
       <Droppable droppableId="sections">
-        {(provided: { innerRef: Ref<HTMLDivElement> | undefined; droppableProps: JSX.IntrinsicAttributes & ClassAttributes<HTMLDivElement> & HTMLAttributes<HTMLDivElement>; placeholder: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; }) => (
+        {(provided) => (
           <div ref={provided.innerRef} {...provided.droppableProps}>
             {sections.map((section: Section, sectionIndex: number) => (
               <Draggable
@@ -76,7 +75,7 @@ export default function DroppableComponent() {
                       }
                     >
                       <Droppable droppableId={`chapters-${section.sectionId}`}>
-                        {(droppableProvider: { innerRef: Ref<HTMLDivElement> | undefined; droppableProps: JSX.IntrinsicAttributes & ClassAttributes<HTMLDivElement> & HTMLAttributes<HTMLDivElement>; placeholder: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; }) => (
+                        {(droppableProvider) => (
                           <div
                             ref={droppableProvider.innerRef}
                             {...droppableProvider.droppableProps}
