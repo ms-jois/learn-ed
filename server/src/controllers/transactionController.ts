@@ -2,14 +2,14 @@ import Stripe from "stripe";
 import dotenv from "dotenv";
 import { Request, Response } from "express";
 import Course from "../models/courseModel";
-import UserCourseProgress from "../models/userCourseProgressModel";
 import Transaction from "../models/transactionModel";
+import UserCourseProgress from "../models/userCourseProgressModel";
 
 dotenv.config();
 
 if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error(
-    "STRIPE_SECRET_KEY as required but was not found in env variables"
+    "STRIPE_SECRET_KEY os required but was not found in env variables"
   );
 }
 
@@ -25,14 +25,13 @@ export const listTransactions = async (
     const transactions = userId
       ? await Transaction.query("userId").eq(userId).exec()
       : await Transaction.scan().exec();
+
     res.json({
       message: "Transactions retrieved successfully",
       data: transactions,
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error retrieving transactions", error });
+    res.status(500).json({ message: "Error retrieving transactions", error });
   }
 };
 
@@ -55,6 +54,7 @@ export const createStripePaymentIntent = async (
         allow_redirects: "never",
       },
     });
+
     res.json({
       message: "",
       data: {
@@ -64,7 +64,7 @@ export const createStripePaymentIntent = async (
   } catch (error) {
     res
       .status(500)
-      .json({ message: "Error creating srtipe payment intent", error });
+      .json({ message: "Error creating stripe payment intent", error });
   }
 };
 
@@ -75,10 +75,10 @@ export const createTransaction = async (
   const { userId, courseId, transactionId, amount, paymentProvider } = req.body;
 
   try {
-    //1.get course info
+    // 1. get course info
     const course = await Course.get(courseId);
 
-    //2. create transaction record
+    // 2. create transaction record
     const newTransaction = new Transaction({
       dateTime: new Date().toISOString(),
       userId,
@@ -89,7 +89,7 @@ export const createTransaction = async (
     });
     await newTransaction.save();
 
-    //3.create user step progress
+    // 3. create initial course progress
     const initialProgress = new UserCourseProgress({
       userId,
       courseId,
@@ -104,10 +104,9 @@ export const createTransaction = async (
       })),
       lastAccessedTimestamp: new Date().toISOString(),
     });
-
     await initialProgress.save();
 
-    //4. add enrollment to relavant course
+    // 4. add enrollment to relevant course
     await Course.update(
       { courseId },
       {
